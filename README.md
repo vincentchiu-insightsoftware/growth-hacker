@@ -17,7 +17,7 @@
 | `01-入門/` | Growth Hacking 新手教材（看懂名詞與框架） | Claude 寫，Vincent 讀 |
 | `02-現況盤點/` | AI Token King 目前的數字與狀況 | **Vincent 填**，Claude 分析 |
 | `03-實驗/` | 實驗點子清單（Backlog）＋每個實驗的紀錄 | 一起 |
-| `04-流程/` | 每週成長會議怎麼開、怎麼做決定 | Claude 定，Vincent 執行 |
+| `04-流程/` | 成長制度提案（角色分工、節奏、啟動計畫）、每週成長會議怎麼開 | Claude 定，Vincent 執行 |
 | `agents/` | Growth Hacker AI 角色設定，可用 `@GrowthHacker` 呼叫 | Claude |
 
 ## 新手起步三步驟
