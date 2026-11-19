@@ -2,25 +2,31 @@ import { marked } from "marked@12";
 
 // Railway Function「question-dashboard」的原始碼（AI Token King 專案）。
 // 問題總表從 GitHub 即時讀取：推送 02-現況盤點/問題總表.md 到 main 即可更新（快取 CACHE_MS）。
-// 「團隊統整」分頁是靜態內容，修改時要重新部署這個檔案。
+// 「團隊統整」分頁也從 GitHub 讀取 dashboard/team.html（內含該頁的樣式），修改後推送到 main 即可。
+const RAW = "https://raw.githubusercontent.com/vincentchiu-insightsoftware/growth-hacker/main/";
+const TEAM_URL = RAW + "dashboard/team.html";
 const SOURCE_URL =
   "https://raw.githubusercontent.com/vincentchiu-insightsoftware/growth-hacker/main/02-%E7%8F%BE%E6%B3%81%E7%9B%A4%E9%BB%9E/%E5%95%8F%E9%A1%8C%E7%B8%BD%E8%A1%A8.md";
 const CACHE_MS = 60_000;
 
-let cache: { at: number; md: string; fetchedAt: string } | null = null;
+type Cached = { at: number; md: string; fetchedAt: string };
+const caches = new Map<string, Cached>();
 
-async function loadMd() {
-  if (cache && Date.now() - cache.at < CACHE_MS) return cache;
+async function load(url: string): Promise<Cached> {
+  const hit = caches.get(url);
+  if (hit && Date.now() - hit.at < CACHE_MS) return hit;
   try {
-    const res = await fetch(`${SOURCE_URL}?t=${Date.now()}`, { headers: { "Cache-Control": "no-cache" } });
+    const res = await fetch(`${url}?t=${Date.now()}`, { headers: { "Cache-Control": "no-cache" } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const md = await res.text();
     const fetchedAt = new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei", hour12: false });
-    cache = { at: Date.now(), md, fetchedAt };
+    const fresh = { at: Date.now(), md, fetchedAt };
+    caches.set(url, fresh);
+    return fresh;
   } catch (e) {
-    if (!cache) throw e;
+    if (!hit) throw e;
+    return hit;
   }
-  return cache!;
 }
 
 function parse(MD: string) {
@@ -93,111 +99,6 @@ a{color:var(--accent)}
 .pill{display:inline-block;font-size:13px;padding:1px 10px;border-radius:999px;border:1px solid currentColor;margin-left:6px;vertical-align:middle}
 .pill.ok{color:var(--ok)}.pill.wait{color:var(--wait)}.pill.draft{color:var(--draft)}
 .foot{color:var(--muted);font-size:13px;margin-top:30px}
-.sec-no{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--text);color:var(--bg);font-size:15px;font-weight:700;margin-right:10px;vertical-align:2px}
-.lead{font-size:17px;margin:4px 0 0}
-.muted{color:var(--muted)}
-.tag{display:inline-block;font-size:12px;padding:0 8px;border-radius:999px;background:var(--code);color:var(--muted);margin-left:6px;vertical-align:2px;font-weight:400}
-/* problems */
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.prob{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg)}
-.prob .ic{font-size:26px;line-height:1}
-.prob b{display:block;margin:8px 0 4px;font-size:17px}
-.prob p{margin:0;color:var(--muted);font-size:15px}
-.arrow-down{text-align:center;font-size:22px;color:var(--muted);margin:10px 0}
-.fix{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.fix div{border-radius:12px;padding:14px 16px;background:var(--accent-soft);border:1px solid var(--accent)}
-.fix b{display:block;font-size:16px}
-.fix span{font-size:14px;color:var(--muted)}
-/* north star */
-.star{text-align:center;padding:26px 16px;border-radius:14px;background:var(--accent-soft);border:2px solid var(--accent)}
-.star .k{font-size:14px;color:var(--muted);letter-spacing:.08em}
-.star .v{font-size:26px;font-weight:800;margin:6px 0 2px;line-height:1.4}
-.star .n{font-size:15px;color:var(--muted)}
-/* metric tree */
-.tree{margin-top:18px}
-.tree .root{max-width:520px;margin:0 auto;text-align:center;padding:12px 16px;border-radius:12px;background:var(--text);color:var(--bg);font-weight:700}
-.tree .stem{width:2px;height:18px;background:var(--line);margin:0 auto}
-.tree .branches{display:grid;grid-template-columns:1fr 1fr;gap:16px;position:relative;padding-top:18px}
-.tree .branches:before{content:"";position:absolute;top:0;left:25%;right:25%;height:2px;background:var(--line)}
-.branch{position:relative;border-radius:14px;padding:14px;border:2px solid}
-.branch:before{content:"";position:absolute;top:-20px;left:50%;width:2px;height:18px;background:var(--line)}
-.branch.new{border-color:var(--new);background:var(--new-soft)}
-.branch.keep{border-color:var(--keep);background:var(--keep-soft)}
-.branch h3{margin:0 0 4px;font-size:18px}
-.branch.new h3{color:var(--new)}.branch.keep h3{color:var(--keep)}
-.branch .bq{font-size:14px;color:var(--muted);margin:0 0 10px}
-.leaf{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px}
-.leaf .lt{font-weight:600}
-.people{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.person{display:inline-flex;align-items:center;gap:6px;font-size:14px;padding:2px 10px 2px 3px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}
-.person i{font-style:normal;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--bg);font-size:12px;font-weight:700}
-.person.ext i{background:var(--muted)}
-/* kpi cards */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.kpi{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg);border-top:4px solid var(--line)}
-.kpi.new{border-top-color:var(--new)}.kpi.keep{border-top-color:var(--keep)}
-.kpi .who{font-weight:700;font-size:17px}
-.kpi .role{font-size:13px;color:var(--muted)}
-.kpi .num{margin-top:8px;font-size:15px;line-height:1.55}
-.kpi .num b{display:block;font-size:12px;color:var(--muted);font-weight:400;letter-spacing:.05em}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:0 0 12px}
-.legend span:before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-.legend .l-new:before{background:var(--new)}.legend .l-keep:before{background:var(--keep)}
-/* matrix */
-.matrix{display:grid;grid-template-columns:48px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:8px;margin-top:14px}
-.ylab{display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;line-height:1.4;color:var(--muted);font-weight:600}
-.xlab{display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);font-weight:600;padding:2px 0}
-.corner{font-size:12px;color:var(--muted);display:flex;align-items:flex-end;justify-content:center;text-align:center;line-height:1.3}
-.q{border-radius:12px;padding:14px 16px;min-height:150px;border:2px solid;position:relative}
-.q .qi{font-size:24px;line-height:1}
-.q b{display:block;font-size:18px;margin:6px 0 2px}
-.q .cond{font-size:13px;color:var(--muted)}
-.q p{margin:6px 0 0;font-size:15px}
-.q.keep{border-color:var(--ok);background:var(--ok-soft)}
-.q.opt{border-color:var(--info);background:var(--info-soft)}
-.q.watch{border-color:var(--wait);background:var(--wait-soft)}
-.q.stop{border-color:var(--draft);background:var(--draft-soft)}
-.q .ax{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
-.flow{display:flex;align-items:stretch;gap:10px;margin-top:16px;flex-wrap:wrap}
-.flow .box{flex:1;min-width:180px;border-radius:12px;padding:12px 14px;border:1px dashed var(--line);background:var(--bg)}
-.flow .to{display:flex;align-items:center;font-size:22px;color:var(--muted)}
-.flow .box b{display:block}
-/* priority lanes */
-.lanes{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.lane{border-radius:12px;border:1px solid var(--line);background:var(--bg);overflow:hidden}
-.lane .lh{padding:10px 14px;font-weight:700;color:#fff}
-.lane .lh small{display:block;font-weight:400;opacity:.9;font-size:12px}
-.lane.l1 .lh{background:var(--accent)}
-.lane.l2 .lh{background:var(--keep)}
-.lane.l3 .lh{background:var(--muted)}
-.lane.l4 .lh{background:var(--line);color:var(--text)}
-.lane ul{margin:0;padding:10px 14px 12px 30px;font-size:15px}
-.lane li{margin:6px 0}
-.lane li span{display:block;font-size:13px;color:var(--muted)}
-/* steps */
-.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;counter-reset:s}
-.steps li{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg);counter-increment:s;position:relative}
-.steps li:before{content:counter(s);display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:14px;margin-bottom:6px}
-.steps li b{display:block}
-.steps li span{font-size:14px;color:var(--muted)}
-.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-.three div{border-radius:10px;padding:10px 12px;background:var(--code);font-size:15px}
-.three b{margin-right:6px}
-@media (max-width:820px){
- .grid3,.fix,.lanes,.steps,.three{grid-template-columns:1fr}
- .kpis{grid-template-columns:1fr 1fr}
- .tree .branches{grid-template-columns:1fr}
- .tree .branches:before,.branch:before{display:none}
- .matrix{grid-template-columns:40px 1fr 1fr;gap:6px}
- .ylab{font-size:12px}
- .corner{visibility:hidden}
- .q{min-height:0;padding:12px}
- .q b{font-size:16px}
- .q p{font-size:14px}
- h1{font-size:24px}
- .card{padding:18px 16px}
-}
-@media (max-width:480px){.kpis{grid-template-columns:1fr}}
 @media print{header{display:none}.card{break-inside:avoid}}
 `;
 
@@ -244,155 +145,6 @@ function allPage(MD: string, fetchedAt: string) {
   return page("問題總表｜AI Token King", "all", body, mdFoot(fetchedAt));
 }
 
-// ---------- 團隊統整（靜態） ----------
-const P = (name: string, ext = false) => `<span class="person${ext ? " ext" : ""}"><i>${name.slice(0, 1)}</i>${name}</span>`;
-
-function teamPage() {
-  const body = `
-<h1>🧭 團隊統整：一個目標，每人一個數字</h1>
-<p class="sub">開會用：先看懂為什麼要統整，再一起盤點手上的工作，決定哪些保留、哪些停掉，把時間移到最重要的事。</p>
-
-<section class="card">
-<h2><span class="sec-no">1</span>為什麼要統整？</h2>
-<div class="grid3">
- <div class="prob"><div class="ic">🧩</div><b>各做各的</b><p>每個人都在做自己領域的事，對彼此的工作不太了解。</p></div>
- <div class="prob"><div class="ic">🎯</div><b>沒有共同目標</b><p>沒有一個大家一起追的目標，也沒有明確的績效。</p></div>
- <div class="prob"><div class="ic">⏳</div><b>新任務沒有時間</b><p>老闆要擴大合作夥伴，但每個人手上已經滿了。</p></div>
-</div>
-<div class="arrow-down">▼ 這次會議要解決的事</div>
-<div class="fix">
- <div><b>① 一個共同目標</b><span>全團隊看同一個數字</span></div>
- <div><b>② 每人一個數字</b><span>知道自己負責讓哪一塊變大</span></div>
- <div><b>③ 停掉低效的工作</b><span>把時間移去擴大合作夥伴</span></div>
-</div>
-</section>
-
-<section class="card">
-<h2><span class="sec-no">2</span>一個共同目標（老闆已確定）</h2>
-<div class="star">
- <div class="k">北極星指標</div>
- <div class="v">每週有實際使用 AI Token King 的人數</div>
- <div class="n">目前數字：待從後台數據計算</div>
-</div>
-<p class="lead">為什麼是這個數字？註冊了不用，對公司沒有幫助；<b>真的在用的人，才會再儲值</b>。所有人的工作，最後都要讓這個數字變大。</p>
-</section>
-
-<section class="card">
-<h2><span class="sec-no">3</span>這個數字怎麼變大？每個人在哪裡<span class="tag">分工為建議，會議中確認</span></h2>
-<div class="legend"><span class="l-new">找人進來</span><span class="l-keep">讓人留下來</span><span>灰色頭像＝行銷部以外的同事</span></div>
-<div class="tree">
- <div class="root">⭐ 每週有實際使用的人數</div>
- <div class="stem"></div>
- <div class="branches">
-  <div class="branch new">
-   <h3>➕ 新進來的人</h3>
-   <p class="bq">有多少新的人開始用？</p>
-   <div class="leaf"><div class="lt">合作夥伴帶來的學生 <span class="tag">老闆定的第一重點</span></div><div class="people">${P("Penny")}${P("業務（2 位）", true)}${P("Yolanda")}</div></div>
-   <div class="leaf"><div class="lt">工作坊學員</div><div class="people">${P("Vincent")}</div></div>
-   <div class="leaf"><div class="lt">網站、內容帶來的人</div><div class="people">${P("Serena")}${P("Anthony")}</div></div>
-  </div>
-  <div class="branch keep">
-   <h3>🔁 留下來的人</h3>
-   <p class="bq">用過的人，有沒有繼續用？</p>
-   <div class="leaf"><div class="lt">學得會、做得出作品</div><div class="people">${P("Vincent")}${P("Yolanda")}</div></div>
-   <div class="leaf"><div class="lt">產品好用</div><div class="people">${P("Alice", true)}</div></div>
-   <div class="leaf"><div class="lt">遇到問題有人幫忙</div><div class="people">${P("客服（AI＋4 位）", true)}</div></div>
-  </div>
- </div>
-</div>
-</section>
-
-<section class="card">
-<h2><span class="sec-no">4</span>每人一個數字<span class="tag">建議，會議中確認</span></h2>
-<p class="muted" style="margin-top:0">每週會議，每個人只要回報自己的數字，就知道團隊離目標還有多遠。</p>
-<div class="legend"><span class="l-new">找人進來</span><span class="l-keep">讓人留下來</span></div>
-<div class="kpis">
- <div class="kpi new"><div class="who">Penny</div><div class="role">線上陌生開發</div><div class="num"><b>每週回報</b>線上新談成的合作夥伴數</div></div>
- <div class="kpi new"><div class="who">業務（2 位）</div><div class="role">線下開發</div><div class="num"><b>每週回報</b>線下新談成的合作夥伴與客戶數</div></div>
- <div class="kpi new"><div class="who">Yolanda</div><div class="role">合作提案、教材編輯</div><div class="num"><b>每週回報</b>合作夥伴簽約數、合作夥伴帶來的付費客戶數</div></div>
- <div class="kpi new"><div class="who">Serena</div><div class="role">網站、SEO、影音傳播</div><div class="num"><b>每週回報</b>網站帶來的工作坊報名數與註冊數</div></div>
- <div class="kpi new"><div class="who">Anthony</div><div class="role">深度專題、內部 KOL</div><div class="num"><b>每週回報</b>專題內容帶來的報名數與註冊數</div></div>
- <div class="kpi keep"><div class="who">Vincent</div><div class="role">工作坊、成長負責人</div><div class="num"><b>每週回報</b>工作坊學員現場註冊數、7 天內開始使用的人數</div></div>
- <div class="kpi keep"><div class="who">Alice</div><div class="role">產品管理</div><div class="num"><b>每週回報</b>產品改善進度（工作範本、手機版）</div></div>
- <div class="kpi keep"><div class="who">客服</div><div class="role">AI 客服＋真人 4 位</div><div class="num"><b>每週回報</b>主動協助的新用戶數</div></div>
-</div>
-</section>
-
-<section class="card">
-<h2><span class="sec-no">5</span>盤點手上的工作：保留、優化、觀察、停掉</h2>
-<p class="muted" style="margin-top:0">每一件固定在做的事，回答兩個問題：<b>跟北極星指標有沒有關係？</b>以及<b>每週花多少時間？</b>然後放進下面四格。</p>
-<div class="matrix">
- <div class="corner">關係＼時間</div>
- <div class="xlab">每週花的時間少</div>
- <div class="xlab">每週花的時間多</div>
- <div class="ylab">跟北極星<br>直接有關</div>
- <div class="q keep"><span class="ax">直接有關・花得少</span><div class="qi">✅</div><b>保留</b><div class="cond">划算的工作</div><p>繼續做。</p></div>
- <div class="q opt"><span class="ax">直接有關・花得多</span><div class="qi">🔧</div><b>優化</b><div class="cond">重要但很花時間</div><p>保留，但想辦法做得更快，例如交給 Claude 協助、做成模板。</p></div>
- <div class="ylab">跟北極星<br>看不出關係</div>
- <div class="q watch"><span class="ax">看不出關係・花得少</span><div class="qi">👀</div><b>觀察</b><div class="cond">影響不大</div><p>先留著，一個月後用數字再檢查一次。</p></div>
- <div class="q stop"><span class="ax">看不出關係・花得多</span><div class="qi">⛔</div><b>優先停掉</b><div class="cond">最該釋放的時間</div><p>停掉或大幅減少，時間移去做合作夥伴。</p></div>
-</div>
-<div class="flow">
- <div class="box"><b>⛔ 停掉的工作</b><span class="muted">釋放出來的時間</span></div>
- <div class="to">➜</div>
- <div class="box"><b>🤝 擴大合作夥伴</b><span class="muted">老闆定的第一重點</span></div>
- <div class="to">➜</div>
- <div class="box"><b>⭐ 每週使用人數變多</b><span class="muted">用數字確認有沒有效</span></div>
-</div>
-</section>
-
-<section class="card">
-<h2><span class="sec-no">6</span>輕重緩急：先做什麼、後做什麼<span class="tag">建議</span></h2>
-<div class="lanes">
- <div class="lane l1"><div class="lh">1　現在就做<small>人力優先放這裡</small></div><ul>
-  <li>擴大合作夥伴<span>Penny（線上）、業務（線下）、Yolanda（簽約）</span></li>
-  <li>合作老師教學包<span>Vincent 設計、Yolanda 編輯</span></li>
-  <li>算出北極星指標的起點<span>Vincent、Alice</span></li>
- </ul></div>
- <div class="lane l2"><div class="lh">2　接著做<small>支援第一重點</small></div><ul>
-  <li>工作坊（資訊傳遞優先、手機版）<span>Vincent</span></li>
-  <li>網站加上給小白看的頁面<span>Serena</span></li>
-  <li>信任內容：老師專訪、學員作品<span>Anthony</span></li>
- </ul></div>
- <div class="lane l3"><div class="lh">3　有餘力再做<small>速度不在我們手上</small></div><ul>
-  <li>手機版改善<span>Alice 對接深圳團隊</span></li>
-  <li>註冊後工作範本<span>Alice 對接深圳團隊</span></li>
-  <li>模型比較表<span>Alice 提供價格資料</span></li>
- </ul></div>
- <div class="lane l4"><div class="lh">暫緩<small>先不投入時間</small></div><ul>
-  <li>AI 短劇<span>老闆排在三個方向的最後</span></li>
-  <li>跟目前主力客群不符的工作<span>由工作盤點決定</span></li>
- </ul></div>
-</div>
-</section>
-
-<section class="card">
-<h2><span class="sec-no">7</span>這次會議怎麼進行</h2>
-<ol class="steps">
- <li><b>會前</b><span>每個人把手上固定在做的事列出來，填下面的盤點表。</span></li>
- <li><b>輪流分享</b><span>每人 3 分鐘：我在做什麼、每週花多少時間。</span></li>
- <li><b>一起分類</b><span>用第 5 節的四格，把每件事放進保留、優化、觀察、停掉。</span></li>
- <li><b>做決定</b><span>停掉哪些事、時間移到哪裡、每個人每週回報哪個數字。</span></li>
-</ol>
-<h3>會前盤點表（每人一份）</h3>
-<div class="tw"><table>
-<thead><tr><th>我固定在做的事</th><th>跟北極星的關係<br><span class="muted" style="font-weight:400">直接／間接／看不出</span></th><th>每週花幾小時</th><th>我覺得應該<br><span class="muted" style="font-weight:400">保留／優化／觀察／停掉</span></th></tr></thead>
-<tbody>
-<tr><td class="muted">範例：每週更新社群貼文</td><td class="muted">間接</td><td class="muted">4</td><td class="muted">優化</td></tr>
-<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-</tbody></table></div>
-<h3>之後每週的同步會議（30 分鐘，每人 3 分鐘）</h3>
-<div class="three">
- <div><b>①</b>我的數字這週是多少</div>
- <div><b>②</b>下週要做什麼</div>
- <div><b>③</b>我卡在哪裡、需要誰幫忙</div>
-</div>
-</section>`;
-  return page("🧭 團隊統整｜AI Token King", "team", body, "團隊統整頁的分工與數字為建議，請在會議中確認後再更新。");
-}
-const TEAM_HTML = teamPage();
-
 // ---------- auth + server ----------
 const PASSWORD = Bun.env.DASHBOARD_PASSWORD ?? "";
 function authorized(req: Request) {
@@ -419,13 +171,18 @@ Bun.serve({
     }
     const url = new URL(req.url);
     const headers = { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" };
-    if (url.pathname === "/team") return new Response(TEAM_HTML, { headers });
+    const isTeam = url.pathname === "/team";
     let data;
     try {
-      data = await loadMd();
+      data = await load(isTeam ? TEAM_URL : SOURCE_URL);
     } catch (e) {
-      return new Response(`暫時無法讀取 GitHub 上的問題總表，請稍後再試。（${e}）`, { status: 502, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+      return new Response(`暫時無法讀取 GitHub 上的內容，請稍後再試。（${e}）`, { status: 502, headers: { "Content-Type": "text/plain; charset=utf-8" } });
     }
+    if (isTeam)
+      return new Response(
+        page("🧭 團隊統整｜AI Token King", "team", data.md, `分工與數字為建議，請在會議中確認後再更新。內容讀取自 GitHub growth-hacker／dashboard／team.html，最後讀取：${data.fetchedAt}（台北時間）`),
+        { headers },
+      );
     if (url.pathname === "/" || url.pathname === "/priority") return new Response(prioPage(data.md, data.fetchedAt), { headers });
     if (url.pathname === "/all") return new Response(allPage(data.md, data.fetchedAt), { headers });
     return new Response("找不到頁面", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
