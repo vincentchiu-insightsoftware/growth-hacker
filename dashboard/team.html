@@ -134,6 +134,28 @@
  .ptable .cell .ml{display:block}
  .ptable .cell.p1 .ml{color:var(--info)}.ptable .cell.p2 .ml{color:var(--accent)}.ptable .cell.p3 .ml{color:var(--ok)}
 }
+/* relation map */
+.rm-wrap{overflow-x:auto;margin:6px 0 4px}
+.rm{width:100%;min-width:620px;height:auto;display:block}
+.rm-e{fill:none;stroke:var(--muted);stroke-width:2;opacity:.75}
+.rm-ah{fill:var(--muted)}
+.rm-node circle{fill:var(--card);stroke-width:3}
+.rm-node.mk circle{stroke:var(--accent);fill:var(--accent-soft)}
+.rm-node.ext circle{stroke:var(--muted);stroke-dasharray:6 5}
+.rm-name{font-size:19px;font-weight:700;fill:var(--text);text-anchor:middle}
+.rm-role{font-size:14px;fill:var(--muted);text-anchor:middle}
+.rm-b circle{fill:var(--text)}
+.rm-b text{font-size:13px;font-weight:700;fill:var(--bg);text-anchor:middle}
+.rm-b{cursor:help}
+.rm-legend{list-style:none;padding:0;margin:14px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:14px}
+.rm-legend li{display:flex;gap:8px;align-items:baseline;line-height:1.5}
+.rm-legend b{white-space:nowrap;margin-right:4px}
+.rm-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--bg);font-size:12px;font-weight:700}
+.rm-key{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:0 0 6px}
+.rm-key span:before{content:"";display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:6px;vertical-align:-2px;border:2px solid}
+.rm-key .k-mk:before{border-color:var(--accent);background:var(--accent-soft)}
+.rm-key .k-ext:before{border-color:var(--muted);border-style:dashed}
+@media (max-width:820px){.rm-legend{grid-template-columns:1fr}}
 </style>
 <h1>🧭 團隊統整：一個目標，每人一個數字</h1>
 <p class="sub">開會用：先看懂為什麼要統整，再一起盤點手上的工作，決定哪些保留、哪些停掉，把時間移到最重要的事。</p>
@@ -189,7 +211,18 @@
 </section>
 
 <section class="card">
-<h2><span class="sec-no">4</span>每人一個數字<span class="tag">建議，會議中確認</span></h2>
+<h2><span class="sec-no">4</span>工作關係圖：誰交什麼給誰<span class="tag">建議，會議中確認</span></h2>
+<p class="muted" style="margin-top:0">箭頭代表「交棒」：一個人做完的東西，交給下一個人接著用。Vincent 和 Yolanda 是中間的樞紐，大部分的工作都會經過他們。</p>
+<div class="rm-key"><span class="k-mk">行銷部</span><span class="k-ext">其他部門的同事</span><span>⇢ 編號對應下方說明（滑鼠移到編號上也會顯示）</span></div>
+<div class="rm-wrap"><svg class="rm" viewBox="0 0 1010 660" role="img" aria-label="工作關係圖：每個人交什麼給誰">
+<defs><marker id="rm-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="rm-ah"/></marker></defs>
+<path class="rm-e" d="M599,303 Q520,287 447,302" marker-end="url(#rm-arrow)"><title>1. Vincent → Yolanda：課程與教材，編成合作老師教學包</title></path><path class="rm-e" d="M336,271 Q266,200 181,159" marker-end="url(#rm-arrow)"><title>2. Yolanda → Penny：教學包、合作方案，拿去開發</title></path><path class="rm-e" d="M164,174 Q234,245 319,286" marker-end="url(#rm-arrow)"><title>3. Penny → Yolanda：線上談成的合作夥伴，交給 Yolanda 提案簽約</title></path><path class="rm-e" d="M324,342 Q234,385 168,452" marker-end="url(#rm-arrow)"><title>4. Yolanda → 業務（2 位）：教學包、合作方案，拿去開發</title></path><path class="rm-e" d="M176,473 Q266,430 332,363" marker-end="url(#rm-arrow)"><title>5. 業務（2 位） → Yolanda：線下談成的合作夥伴，交給 Yolanda 提案簽約</title></path><path class="rm-e" d="M173,468 Q371,351 593,323" marker-end="url(#rm-arrow)"><title>6. 業務（2 位） → Vincent：市調結果，決定工作坊方向；邀請客戶來上課</title></path><path class="rm-e" d="M163,175 Q341,364 593,325" marker-end="url(#rm-arrow)"><title>7. Penny → Vincent：邀請潛在合作夥伴和學員來工作坊</title></path><path class="rm-e" d="M715,287 Q794,246 847,182" marker-end="url(#rm-arrow)"><title>8. Vincent → Anthony：工作坊現場、學員作品，當作專題素材</title></path><path class="rm-e" d="M421,268 Q584,81 823,119" marker-end="url(#rm-arrow)"><title>9. Yolanda → Anthony：合作成功案例，當作專題素材</title></path><path class="rm-e" d="M880,191 Q860,315 879,433" marker-end="url(#rm-arrow)"><title>10. Anthony → Serena：專題內容，放到網站、YouTube、Podcast 傳播</title></path><path class="rm-e" d="M850,452 Q794,384 720,346" marker-end="url(#rm-arrow)"><title>11. Serena → Vincent：招生頁帶來的工作坊報名</title></path><path class="rm-e" d="M621,363 Q565,432 541,510" marker-end="url(#rm-arrow)"><title>12. Vincent → Alice：學員回饋的產品問題</title></path><path class="rm-e" d="M559,527 Q615,458 639,380" marker-end="url(#rm-arrow)"><title>13. Alice → Vincent：後台數據，算北極星指標</title></path><path class="rm-e" d="M502,516 Q476,431 424,367" marker-end="url(#rm-arrow)"><title>14. Alice → Yolanda：合作夥伴分潤方案</title></path><path class="rm-e" d="M673,376 Q693,464 741,534" marker-end="url(#rm-arrow)"><title>15. Vincent → 客服：新學員名單，48 小時內主動協助</title></path><g class="rm-node mk"><circle cx="120" cy="130" r="58"/><text class="rm-name" x="120" y="128">Penny</text><text class="rm-role" x="120" y="150">線上陌開</text></g><g class="rm-node ext"><circle cx="120" cy="500" r="58"/><text class="rm-name" x="120" y="498">業務（2 位）</text><text class="rm-role" x="120" y="520">線下開發</text></g><g class="rm-node mk"><circle cx="380" cy="315" r="58"/><text class="rm-name" x="380" y="313">Yolanda</text><text class="rm-role" x="380" y="335">提案、教材</text></g><g class="rm-node mk"><circle cx="660" cy="315" r="58"/><text class="rm-name" x="660" y="313">Vincent</text><text class="rm-role" x="660" y="335">工作坊</text></g><g class="rm-node mk"><circle cx="890" cy="130" r="58"/><text class="rm-name" x="890" y="128">Anthony</text><text class="rm-role" x="890" y="150">專題內容</text></g><g class="rm-node mk"><circle cx="890" cy="500" r="58"/><text class="rm-name" x="890" y="498">Serena</text><text class="rm-role" x="890" y="520">網站、傳播</text></g><g class="rm-node ext"><circle cx="520" cy="575" r="58"/><text class="rm-name" x="520" y="573">Alice</text><text class="rm-role" x="520" y="595">產品管理</text></g><g class="rm-node ext"><circle cx="780" cy="590" r="58"/><text class="rm-name" x="780" y="588">客服</text><text class="rm-role" x="780" y="610">AI＋4 位</text></g><g class="rm-b"><title>1. Vincent → Yolanda：課程與教材，編成合作老師教學包</title><circle cx="521" cy="295" r="13"/><text x="521" y="300">1</text></g><g class="rm-b"><title>2. Yolanda → Penny：教學包、合作方案，拿去開發</title><circle cx="263" cy="207" r="13"/><text x="263" y="212">2</text></g><g class="rm-b"><title>3. Penny → Yolanda：線上談成的合作夥伴，交給 Yolanda 提案簽約</title><circle cx="237" cy="238" r="13"/><text x="237" y="243">3</text></g><g class="rm-b"><title>4. Yolanda → 業務（2 位）：教學包、合作方案，拿去開發</title><circle cx="240" cy="391" r="13"/><text x="240" y="396">4</text></g><g class="rm-b"><title>5. 業務（2 位） → Yolanda：線下談成的合作夥伴，交給 Yolanda 提案簽約</title><circle cx="260" cy="424" r="13"/><text x="260" y="429">5</text></g><g class="rm-b"><title>6. 業務（2 位） → Vincent：市調結果，決定工作坊方向；邀請客戶來上課</title><circle cx="377" cy="373" r="13"/><text x="377" y="378">6</text></g><g class="rm-b"><title>7. Penny → Vincent：邀請潛在合作夥伴和學員來工作坊</title><circle cx="360" cy="307" r="13"/><text x="360" y="312">7</text></g><g class="rm-b"><title>8. Vincent → Anthony：工作坊現場、學員作品，當作專題素材</title><circle cx="787" cy="240" r="13"/><text x="787" y="245">8</text></g><g class="rm-b"><title>9. Yolanda → Anthony：合作成功案例，當作專題素材</title><circle cx="603" cy="138" r="13"/><text x="603" y="143">9</text></g><g class="rm-b"><title>10. Anthony → Serena：專題內容，放到網站、YouTube、Podcast 傳播</title><circle cx="870" cy="314" r="13"/><text x="870" y="319">10</text></g><g class="rm-b"><title>11. Serena → Vincent：招生頁帶來的工作坊報名</title><circle cx="790" cy="392" r="13"/><text x="790" y="397">11</text></g><g class="rm-b"><title>12. Vincent → Alice：學員回饋的產品問題</title><circle cx="573" cy="434" r="13"/><text x="573" y="439">12</text></g><g class="rm-b"><title>13. Alice → Vincent：後台數據，算北極星指標</title><circle cx="607" cy="456" r="13"/><text x="607" y="461">13</text></g><g class="rm-b"><title>14. Alice → Yolanda：合作夥伴分潤方案</title><circle cx="470" cy="436" r="13"/><text x="470" y="441">14</text></g><g class="rm-b"><title>15. Vincent → 客服：新學員名單，48 小時內主動協助</title><circle cx="700" cy="460" r="13"/><text x="700" y="465">15</text></g>
+</svg></div>
+<ol class="rm-legend"><li><span class="rm-n">1</span><b>Vincent → Yolanda</b>課程與教材，編成合作老師教學包</li><li><span class="rm-n">2</span><b>Yolanda → Penny</b>教學包、合作方案，拿去開發</li><li><span class="rm-n">3</span><b>Penny → Yolanda</b>線上談成的合作夥伴，交給 Yolanda 提案簽約</li><li><span class="rm-n">4</span><b>Yolanda → 業務（2 位）</b>教學包、合作方案，拿去開發</li><li><span class="rm-n">5</span><b>業務（2 位） → Yolanda</b>線下談成的合作夥伴，交給 Yolanda 提案簽約</li><li><span class="rm-n">6</span><b>業務（2 位） → Vincent</b>市調結果，決定工作坊方向；邀請客戶來上課</li><li><span class="rm-n">7</span><b>Penny → Vincent</b>邀請潛在合作夥伴和學員來工作坊</li><li><span class="rm-n">8</span><b>Vincent → Anthony</b>工作坊現場、學員作品，當作專題素材</li><li><span class="rm-n">9</span><b>Yolanda → Anthony</b>合作成功案例，當作專題素材</li><li><span class="rm-n">10</span><b>Anthony → Serena</b>專題內容，放到網站、YouTube、Podcast 傳播</li><li><span class="rm-n">11</span><b>Serena → Vincent</b>招生頁帶來的工作坊報名</li><li><span class="rm-n">12</span><b>Vincent → Alice</b>學員回饋的產品問題</li><li><span class="rm-n">13</span><b>Alice → Vincent</b>後台數據，算北極星指標</li><li><span class="rm-n">14</span><b>Alice → Yolanda</b>合作夥伴分潤方案</li><li><span class="rm-n">15</span><b>Vincent → 客服</b>新學員名單，48 小時內主動協助</li></ol>
+</section>
+
+<section class="card">
+<h2><span class="sec-no">5</span>每人一個數字<span class="tag">建議，會議中確認</span></h2>
 <p class="muted" style="margin-top:0">每週會議，每個人只要回報自己的數字，就知道團隊離目標還有多遠。</p>
 <div class="legend"><span class="l-new">找人進來</span><span class="l-keep">讓人留下來</span></div>
 <div class="kpis">
@@ -205,7 +238,7 @@
 </section>
 
 <section class="card">
-<h2><span class="sec-no">5</span>每個人的工作階段<span class="tag">建議，會議中確認</span></h2>
+<h2><span class="sec-no">6</span>每個人的工作階段<span class="tag">建議，會議中確認</span></h2>
 <p class="muted" style="margin-top:0">以一場工作坊為一輪：先準備，再執行，最後檢討修正，然後進入下一輪。每一輪都比上一輪更好。</p>
 <div class="cycle"><span class="st p1">🛠 準備</span><span class="ar">➜</span><span class="st p2">🚀 執行</span><span class="ar">➜</span><span class="st p3">🔍 檢討修正</span><span class="ar">↺</span><span class="loop">進入下一場工作坊</span></div>
 <div class="ptable">
@@ -218,7 +251,7 @@
 </section>
 
 <section class="card">
-<h2><span class="sec-no">6</span>盤點手上的工作：保留、優化、觀察、停掉</h2>
+<h2><span class="sec-no">7</span>盤點手上的工作：保留、優化、觀察、停掉</h2>
 <p class="muted" style="margin-top:0">每一件固定在做的事，回答兩個問題：<b>跟北極星指標有沒有關係？</b>以及<b>每週花多少時間？</b>然後放進下面四格。</p>
 <div class="matrix">
  <div class="corner">關係＼時間</div>
@@ -241,7 +274,7 @@
 </section>
 
 <section class="card">
-<h2><span class="sec-no">7</span>輕重緩急：先做什麼、後做什麼<span class="tag">建議</span></h2>
+<h2><span class="sec-no">8</span>輕重緩急：先做什麼、後做什麼<span class="tag">建議</span></h2>
 <div class="lanes">
  <div class="lane l1"><div class="lh">1　現在就做<small>人力優先放這裡</small></div><ul>
   <li>擴大合作夥伴<span>Penny（線上）、業務（線下）、Yolanda（簽約）</span></li>
@@ -266,11 +299,11 @@
 </section>
 
 <section class="card">
-<h2><span class="sec-no">8</span>這次會議怎麼進行</h2>
+<h2><span class="sec-no">9</span>這次會議怎麼進行</h2>
 <ol class="steps">
  <li><b>會前</b><span>每個人把手上固定在做的事列出來，填下面的盤點表。</span></li>
  <li><b>輪流分享</b><span>每人 3 分鐘：我在做什麼、每週花多少時間。</span></li>
- <li><b>一起分類</b><span>用第 6 節的四格，把每件事放進保留、優化、觀察、停掉。</span></li>
+ <li><b>一起分類</b><span>用第 7 節的四格，把每件事放進保留、優化、觀察、停掉。</span></li>
  <li><b>做決定</b><span>停掉哪些事、時間移到哪裡、每個人每週回報哪個數字。</span></li>
 </ol>
 <h3>會前盤點表（每人一份）</h3>
