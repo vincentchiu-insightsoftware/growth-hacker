@@ -146,9 +146,10 @@ function allPage(MD: string, fetchedAt: string) {
 }
 
 // ---------- auth + server ----------
+// DASHBOARD_PASSWORD 留空時不需要密碼，任何人都能查看；設定後才會要求輸入密碼。
 const PASSWORD = Bun.env.DASHBOARD_PASSWORD ?? "";
 function authorized(req: Request) {
-  if (!PASSWORD) return false;
+  if (!PASSWORD) return true;
   const h = req.headers.get("authorization") ?? "";
   if (!h.startsWith("Basic ")) return false;
   try {
