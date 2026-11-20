@@ -275,6 +275,18 @@
 .ptable li.has-tip .tip ul{margin:2px 0 6px;padding-left:18px}
 .ptable li.has-tip .tip li{margin:1px 0}
 .ptable li.has-tip .tip b{display:block;margin-top:4px}
+/* timeline */
+.tl-wrap{overflow-x:auto;padding-bottom:6px}
+.tl{position:relative;display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:12px;min-width:780px;padding-right:26px}
+.tl-line{position:absolute;left:0;right:8px;top:60px;height:4px;background:var(--accent);border-radius:2px}
+.tl-line:after{content:"";position:absolute;right:-14px;top:-8px;border-left:18px solid var(--accent);border-top:10px solid transparent;border-bottom:10px solid transparent}
+.tl-col{position:relative;z-index:1;display:flex;flex-direction:column;align-items:stretch}
+.tl-when{height:50px;text-align:center}
+.tl-when b{display:block;font-size:16px}
+.tl-when span{display:block;font-size:13px;color:var(--muted)}
+.tl-dot{width:18px;height:18px;border-radius:50%;background:var(--card);border:4px solid var(--accent);margin:1px auto 12px}
+.tl-items{margin:0;padding:10px 12px 10px 28px;background:var(--bg);border:1px solid var(--line);border-radius:12px;font-size:14px;line-height:1.55;flex:1}
+.tl-items li{margin:3px 0}
 </style>
 <h1>🧭 團隊統整：一個目標，每人一個數字</h1>
 <p class="sub">開會用：先看懂為什麼要統整，再一起盤點手上的工作，決定哪些保留、哪些停掉，把時間移到最重要的事。</p>
@@ -468,7 +480,17 @@
 </section>
 
 <section class="card">
-<h2><span class="sec-no">8</span>這次會議怎麼進行</h2>
+<h2><span class="sec-no">8</span>時間表<span class="tag">建議，會議中確認</span></h2>
+<p class="muted" style="margin-top:0">從現在開始，依時間往右推進。</p>
+<div class="tl-wrap"><div class="tl">
+<div class="tl-line"></div>
+<div class="tl-col"><div class="tl-when"><b>第 1 週</b><span>啟動</span></div><div class="tl-dot"></div><ul class="tl-items"><li>團隊會議：盤點工作、確認分工</li><li>算出北極星指標的起點</li><li>每週週會開始</li></ul></div><div class="tl-col"><div class="tl-when"><b>第 2 週</b><span>準備</span></div><div class="tl-dot"></div><ul class="tl-items"><li>工作坊前期規劃、備課</li><li>報名前問卷</li><li>市調開始（線上＋線下）</li><li>整理合作夥伴名單</li><li>模型比較表開始製作</li></ul></div><div class="tl-col"><div class="tl-when"><b>第 3 週</b><span>試辦</span></div><div class="tl-dot"></div><ul class="tl-items"><li>內部試辦工作坊，修正流程</li><li>招生頁上線</li><li>付費測試開始（先設上限）</li></ul></div><div class="tl-col"><div class="tl-when"><b>第 4 週</b><span>第一場</span></div><div class="tl-dot"></div><ul class="tl-items"><li>第一場正式工作坊（遠端）</li><li>第一次月報</li></ul></div><div class="tl-col"><div class="tl-when"><b>第 2 個月</b><span>修正與擴大</span></div><div class="tl-dot"></div><ul class="tl-items"><li>依回饋修正，開第二場</li><li>共用教學素材第一批</li><li>KOL／AI 講師合作</li><li>市調收滿 30 份，檢討方向</li></ul></div><div class="tl-col"><div class="tl-when"><b>第 3 個月</b><span>檢討</span></div><div class="tl-dot"></div><ul class="tl-items"><li>付費測試：加碼或停損</li><li>長期工作 3 個月檢討</li><li>季度檢討，訂下一季目標</li></ul></div>
+</div></div>
+</section>
+
+<!-- 這次會議怎麼進行：暫時隱藏（Vincent 2026-11-20），之後要用時拿掉 hidden 並重新編號 -->
+<section class="card" hidden>
+<h2><span class="sec-no">–</span>這次會議怎麼進行</h2>
 <ol class="steps">
  <li><b>會前</b><span>每個人把手上固定在做的事列出來，填下面的盤點表。</span></li>
  <li><b>輪流分享</b><span>每人 3 分鐘：我在做什麼、每週花多少時間。</span></li>
