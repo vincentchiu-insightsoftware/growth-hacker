@@ -12,11 +12,34 @@ const CACHE_MS = 60_000;
 type Cached = { at: number; md: string; fetchedAt: string };
 const caches = new Map<string, Cached>();
 
+// raw.githubusercontent.com 的 main 會被 CDN 快取約 5 分鐘。
+// 先向 GitHub API 查 main 最新的 commit，再用 commit 編號讀檔，推送後就能立即看到新內容。
+// API 查不到時（例如超過免登入的次數上限），退回讀 main。
+const SHA_MS = 90_000;
+let shaHit: { at: number; sha: string } | null = null;
+async function latestSha(): Promise<string> {
+  if (shaHit && Date.now() - shaHit.at < SHA_MS) return shaHit.sha;
+  try {
+    const res = await fetch("https://api.github.com/repos/vincentchiu-insightsoftware/growth-hacker/commits/main", {
+      headers: { Accept: "application/vnd.github.sha", "User-Agent": "question-dashboard" },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const sha = (await res.text()).trim();
+    if (!/^[0-9a-f]{40}$/.test(sha)) throw new Error("bad sha");
+    shaHit = { at: Date.now(), sha };
+    return sha;
+  } catch {
+    return shaHit?.sha ?? "main";
+  }
+}
+
 async function load(url: string): Promise<Cached> {
   const hit = caches.get(url);
   if (hit && Date.now() - hit.at < CACHE_MS) return hit;
   try {
-    const res = await fetch(`${url}?t=${Date.now()}`, { headers: { "Cache-Control": "no-cache" } });
+    const sha = await latestSha();
+    const target = url.replace("/growth-hacker/main/", `/growth-hacker/${sha}/`);
+    const res = await fetch(sha === "main" ? `${target}?t=${Date.now()}` : target, { headers: { "Cache-Control": "no-cache" } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const md = await res.text();
     const fetchedAt = new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei", hour12: false });
