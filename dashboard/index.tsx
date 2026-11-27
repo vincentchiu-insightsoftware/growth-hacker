@@ -5,6 +5,7 @@ import { marked } from "marked@12";
 // 「團隊統整」分頁也從 GitHub 讀取 dashboard/team.html（內含該頁的樣式），修改後推送到 main 即可。
 const RAW = "https://raw.githubusercontent.com/vincentchiu-insightsoftware/growth-hacker/main/";
 const TEAM_URL = RAW + "dashboard/team.html";
+const TA_URL = RAW + "dashboard/ta.html";
 const SOURCE_URL =
   "https://raw.githubusercontent.com/vincentchiu-insightsoftware/growth-hacker/main/02-%E7%8F%BE%E6%B3%81%E7%9B%A4%E9%BB%9E/%E5%95%8F%E9%A1%8C%E7%B8%BD%E8%A1%A8.md";
 const CACHE_MS = 60_000;
@@ -125,11 +126,11 @@ a{color:var(--accent)}
 @media print{header{display:none}.card{break-inside:avoid}}
 `;
 
-type Tab = "prio" | "all" | "team";
+type Tab = "prio" | "all" | "team" | "ta";
 function page(title: string, active: Tab, body: string, foot: string) {
   const tab = (href: string, key: Tab, label: string) => `<a href="${href}" class="${active === key ? "on" : ""}">${label}</a>`;
   return `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title}</title><style>${CSS}</style></head><body>
-<header><div class="bar"><span class="brand">AI Token King｜成長計畫</span><nav>${tab("/", "prio", "⭐ 優先 6 題")}${tab("/all", "all", "問題總表")}${tab("/team", "team", "🧭 團隊統整")}</nav></div></header>
+<header><div class="bar"><span class="brand">AI Token King｜成長計畫</span><nav>${tab("/", "prio", "⭐ 優先 6 題")}${tab("/all", "all", "問題總表")}${tab("/team", "team", "🧭 團隊統整")}${tab("/ta", "ta", "🎯 TA 輪廓")}</nav></div></header>
 <main>${body}<p class="foot">${foot}</p></main></body></html>`;
 }
 const mdFoot = (fetchedAt: string) => `內容自動讀取自 GitHub growth-hacker／02-現況盤點／問題總表.md，最後讀取：${fetchedAt}（台北時間）`;
@@ -196,15 +197,21 @@ Bun.serve({
     const url = new URL(req.url);
     const headers = { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" };
     const isTeam = url.pathname === "/team";
+    const isTa = url.pathname === "/ta";
     let data;
     try {
-      data = await load(isTeam ? TEAM_URL : SOURCE_URL);
+      data = await load(isTeam ? TEAM_URL : isTa ? TA_URL : SOURCE_URL);
     } catch (e) {
       return new Response(`暫時無法讀取 GitHub 上的內容，請稍後再試。（${e}）`, { status: 502, headers: { "Content-Type": "text/plain; charset=utf-8" } });
     }
     if (isTeam)
       return new Response(
         page("🧭 團隊統整｜AI Token King", "team", data.md, `分工與數字為建議，請在會議中確認後再更新。內容讀取自 GitHub growth-hacker／dashboard／team.html，最後讀取：${data.fetchedAt}（台北時間）`),
+        { headers },
+      );
+    if (isTa)
+      return new Response(
+        page("🎯 TA 輪廓｜AI Token King", "ta", data.md, `內容為建議，請在會議中確認。內容讀取自 GitHub growth-hacker／dashboard／ta.html，最後讀取：${data.fetchedAt}（台北時間）`),
         { headers },
       );
     if (url.pathname === "/" || url.pathname === "/priority") return new Response(prioPage(data.md, data.fetchedAt), { headers });
