@@ -43,6 +43,25 @@
 .ta-item.out{color:var(--muted)}
 @media (max-width:720px){.ta-wrap{grid-template-columns:1fr}}
 
+.story{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.story li{position:relative;padding:0 0 18px 44px}
+.story li:before{content:"";position:absolute;left:13px;top:30px;bottom:0;width:2px;background:var(--line)}
+.story li:last-child:before{display:none}
+.story .n{position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;background:var(--code);color:var(--text)}
+.story li.end .n{background:var(--accent);color:#fff}
+.story b{display:block;font-size:16px;margin-bottom:2px}
+.story p{margin:0;color:var(--muted);font-size:15px}
+.story li.end p{color:var(--text)}
+.prop{border:2px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:14px 16px;margin-top:6px}
+.prop h3{margin:0 0 6px;font-size:17px}
+.prop ul{margin:0;padding-left:20px}
+.prop li{margin:2px 0}
+.ask-h{font-size:16px;margin:16px 0 8px;color:var(--muted);font-weight:700}
+.ask-h:first-of-type{margin-top:0}
+.risk{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0 0}
+.risk th,.risk td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.risk th{background:var(--code)}
+.risk td:first-child{font-weight:700;width:34%}
 </style>
 <h1>🎯 工作坊 TA 輪廓</h1>
 <p class="sub">請老闆確認：<b>產品定位不變</b>（多家模型、對新手友善），調整的是工作坊要找的人。</p>
@@ -98,10 +117,44 @@
 </section>
 
 <section class="card">
-<h2><span class="sec-no">4</span>想請老闆確認</h2>
+<h2><span class="sec-no">4</span>提案：每場鎖定一個行業，邀請同行嘉賓<span class="tag">提案，待老闆確認</span></h2>
+<p class="muted" style="margin-top:0">這個提案是從「想讓工作坊有人味」討論出來的：</p>
+<ol class="story">
+ <li><span class="n">1</span><b>目標：讓學員有歸屬感</b><p>工作坊要有人味，重點是歸屬感：讓學員覺得在這裡，真的能得到貼切他需求的東西。</p></li>
+ <li><span class="n">2</span><b>原本的想法：上課加線上互動</b><p>有互動能增加信任感，也比較溫暖、有人味。但條件不允許：一班約 10 人，輪流分享畫面很花時間，其他人會空等，現場也會變得混亂。</p></li>
+ <li class="end"><span class="n">3</span><b>最後的辦法：每場鎖定一個行業，邀請同行嘉賓分享</b><p>例如「保險業務場」，請一位已經會用 AI 的保險業務來分享。台下都是同行，聽到的內容最貼近自己的需求，也最有共鳴。</p></li>
+</ol>
+<div class="prop">
+ <h3>提案內容</h3>
+ <ul>
+  <li><b>分工：</b>Vincent 講技術和平台，包括怎麼選模型；嘉賓分享他用 AI Token King 做了什麼東西，為他的工作帶來什麼成果。時間怎麼分配，再討論。</li>
+  <li><b>嘉賓報酬：</b>用 ATK 點數（額度待談）。事前先送點數，請他用 ATK 準備示範。</li>
+  <li><b>嘉賓人選：</b>先從認識的人找。</li>
+  <li><b>跟 TA 的關係：</b>嘉賓本身就是理想對象，常常也能帶同事或下屬來。鎖定一個行業，招生時也更容易讓對的人覺得「這是為我開的」。</li>
+ </ul>
+</div>
+<h3 style="margin:18px 0 0;font-size:17px">先想好的風險</h3>
+<div class="tw"><table class="risk">
+<tr><th>風險</th><th>可以怎麼處理</th></tr>
+<tr><td>每場都要找到一位嘉賓</td><td>先從認識的人開始。</td></tr>
+<tr><td>嘉賓不會講課</td><td>Vincent 事前跟他聊 30 分鐘，幫他整理成 2～3 個例子。技術和平台的部分由 Vincent 講，嘉賓只要分享自己的成果。</td></tr>
+<tr><td>嘉賓示範的是別家工具</td><td>事先送點數，請他用 ATK 準備示範內容。這也是給點數的用意。</td></tr>
+<tr><td>只鎖定一個行業，報名的人變少</td><td>一班本來就只收約 10 人，鎖定行業反而比較好招滿。第一場先選我們最有人脈的行業。</td></tr>
+</table></div>
+</section>
+
+<section class="card">
+<h2><span class="sec-no">5</span>想請老闆確認</h2>
+<p class="ask-h">TA 輪廓</p>
 <ol class="ask">
  <li><div><b>三個圈的定義可以嗎？</b><span>想用多家 AI 但要簡單上手／工作要產出內容／能帶一群人來（主管帶下屬、老師帶學生）。要不要換掉或加一個圈？</span></div></li>
  <li><div><b>純小白和進階創作者先不主打，可以嗎？</b><span>純小白透過主管、老師間接帶進來；進階創作者已經有用慣的平台，我們比較難吸引。</span></div></li>
  <li><div><b>工作坊主題改成「不用自己研究，也能用對模型」，可以嗎？</b><span>確定後，Vincent 照這個方向備課，招生頁也照這個方向寫。</span></div></li>
+</ol>
+<p class="ask-h">工作坊提案</p>
+<ol class="ask" style="counter-reset:a 3">
+ <li><div><b>每場工作坊鎖定一個行業，可以嗎？</b><span>例如先辦「保險業務場」，第一場選我們最有人脈的行業。</span></div></li>
+ <li><div><b>邀請同行嘉賓分享，可以嗎？</b><span>Vincent 講技術、平台和模型選擇；嘉賓分享他做了什麼、為工作帶來什麼成果。時間分配再討論。</span></div></li>
+ <li><div><b>嘉賓報酬用 ATK 點數，額度大約多少？</b></div></li>
 </ol>
 </section>
