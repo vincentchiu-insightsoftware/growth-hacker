@@ -18,11 +18,22 @@ var CHANNELS = [
   'A-社團',
 ];
 
+var PLATFORM_TITLE = '7. 您用過哪些 AI 工具？（可複選）';
+var PLATFORM_CHOICES = [
+  'ChatGPT',
+  'Gemini',
+  'Claude',
+  'Microsoft Copilot',
+  'Midjourney 等圖片工具',
+  '可靈、Runway 等影片工具',
+  '都沒用過',
+];
+
 function createSurveyA() {
   var form = FormApp.create('AI 使用情況小調查');
   form.setDescription(
     '您好，我們正在做一份 AI 使用情況的小調查，想了解大家平常怎麼使用 AI，以及工作上有哪些需要。' +
-    '問卷共 7 題，大約 1 分鐘就能完成。最後一題可以留下聯絡方式，我們會把調查結果寄給您。'
+    '問卷共 8 題，大約 1 分鐘就能完成。最後一題可以留下聯絡方式，我們會把調查結果寄給您。'
   );
   form.setCollectEmail(false);
   form.setShowLinkToRespondAgain(false);
@@ -76,9 +87,16 @@ function createSurveyA() {
     .setChoiceValues(['24 歲以下', '25～34 歲', '35～44 歲', '45～54 歲', '55 歲以上'])
     .setRequired(true);
 
-  // 第 7 題（選填）
+  // 第 7 題
+  form.addCheckboxItem()
+    .setTitle(PLATFORM_TITLE)
+    .setChoiceValues(PLATFORM_CHOICES)
+    .showOtherOption(true)
+    .setRequired(true);
+
+  // 第 8 題（選填）
   form.addTextItem()
-    .setTitle('7.（選填）想收到這份調查的結果，或之後有免費 AI 實作課時收到通知嗎？歡迎留下 LINE 或 Email')
+    .setTitle('8.（選填）想收到這份調查的結果，或之後有免費 AI 實作課時收到通知嗎？歡迎留下 LINE 或 Email')
     .setHelpText('您留下的聯絡方式，只用於寄送調查結果與課程通知，不會提供給第三方。不需要的話，留白即可。');
 
   // 來源代碼：用專屬連結打開時會自動帶入
@@ -102,4 +120,36 @@ function createSurveyA() {
       .toPrefilledUrl();
     Logger.log(code + ' 專屬連結：' + url);
   });
+}
+
+/**
+ * 已經用 createSurveyA 建好表單的話，用這個在「原本的表單」加上第 7 題（連結不變）：
+ * 1. 把下面 FORM_URL 換成表單的編輯連結（執行紀錄裡的「編輯連結」，或表單網址列的 .../edit）
+ * 2. 上方選 addPlatformQuestion，按「執行」
+ */
+var FORM_URL = '貼上表單的編輯連結';
+
+function addPlatformQuestion() {
+  var form = FormApp.openByUrl(FORM_URL);
+  var items = form.getItems();
+  var ageIndex = -1;
+  var contact = null;
+  for (var i = 0; i < items.length; i++) {
+    var t = items[i].getTitle();
+    if (t.indexOf('用過哪些 AI 工具') !== -1) { Logger.log('已經有這一題，不用再加。'); return; }
+    if (t.indexOf('6. 您的年紀') === 0) ageIndex = i;
+    if (t.indexOf('7.（選填）') === 0) contact = items[i];
+  }
+  if (ageIndex < 0) throw new Error('找不到第 6 題（年紀），請確認 FORM_URL 是 A 版表單。');
+
+  var item = form.addCheckboxItem()
+    .setTitle(PLATFORM_TITLE)
+    .setChoiceValues(PLATFORM_CHOICES)
+    .showOtherOption(true)
+    .setRequired(true);
+  form.moveItem(item.getIndex(), ageIndex + 1);
+
+  if (contact) contact.setTitle(contact.getTitle().replace('7.（選填）', '8.（選填）'));
+  form.setDescription(form.getDescription().replace('問卷共 7 題', '問卷共 8 題'));
+  Logger.log('已加上第 7 題。填答連結和各管道的專屬連結都不用換。');
 }
