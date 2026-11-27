@@ -20,6 +20,13 @@
 | `04-流程/` | 成長制度提案（角色分工、節奏、啟動計畫）、每週成長會議怎麼開 | Claude 定，Vincent 執行 |
 | `agents/` | Growth Hacker AI 角色設定，可用 `@GrowthHacker` 呼叫 | Claude |
 
+## Dashboard 編輯原則（Vincent 2026-11-27）
+
+- **之後都以「工作坊 Dashboard」為主**：https://workshop-dashboard-production-8b686e6f.up.railway.app
+  - 內容檔：`dashboard/workshop.html`（工作坊）、`dashboard/ta.html`（TA 輪廓）
+- **團隊 Dashboard 先放著不動**：https://question-dashboard-production.up.railway.app
+  - `dashboard/team.html`、`dashboard/ta-team.html` 不再修改（問題總表分頁仍會跟著 `02-現況盤點/問題總表.md` 自動更新）
+
 ## 新手起步三步驟
 
 1. **讀** `01-入門/growth-hacking-101.md`（約 10 分鐘）

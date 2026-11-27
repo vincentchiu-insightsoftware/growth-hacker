@@ -5,7 +5,7 @@ import { marked } from "marked@12";
 // 「團隊統整」分頁也從 GitHub 讀取 dashboard/team.html（內含該頁的樣式），修改後推送到 main 即可。
 const RAW = "https://raw.githubusercontent.com/vincentchiu-insightsoftware/growth-hacker/main/";
 const TEAM_URL = RAW + "dashboard/team.html";
-const TA_URL = RAW + "dashboard/ta.html";
+const TA_URL = RAW + "dashboard/ta-team.html"; // 團隊 Dashboard 先凍結，之後只改工作坊那份（ta.html）
 const SOURCE_URL =
   "https://raw.githubusercontent.com/vincentchiu-insightsoftware/growth-hacker/main/02-%E7%8F%BE%E6%B3%81%E7%9B%A4%E9%BB%9E/%E5%95%8F%E9%A1%8C%E7%B8%BD%E8%A1%A8.md";
 const CACHE_MS = 60_000;
@@ -211,7 +211,7 @@ Bun.serve({
       );
     if (isTa)
       return new Response(
-        page("🎯 TA 輪廓｜AI Token King", "ta", data.md, `內容為建議，請在會議中確認。內容讀取自 GitHub growth-hacker／dashboard／ta.html，最後讀取：${data.fetchedAt}（台北時間）`),
+        page("🎯 TA 輪廓｜AI Token King", "ta", data.md, `內容為建議，請在會議中確認。內容讀取自 GitHub growth-hacker／dashboard／ta-team.html，最後讀取：${data.fetchedAt}（台北時間）`),
         { headers },
       );
     if (url.pathname === "/" || url.pathname === "/priority") return new Response(prioPage(data.md, data.fetchedAt), { headers });
